@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Full Layout - jQuery EasyUI Demo</title>
+    <link rel="stylesheet" type="text/css" href="../../themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../demo.css">
+    <script type="text/javascript" src="../../jquery.min.js"></script>
+    <script type="text/javascript" src="../../jquery.easyui.min.js"></script>
+</head>
+<body class="easyui-layout">
+<div data-options="region:'north',border:false" style="height:60px;background:#B3DFDA;padding:10px">north region</div>
+<div data-options="region:'west',split:true,title:'West'" style="width:248px;padding:10px;">
+    <div style="margin:20px 0 10px 0;"></div>
+    <div class="easyui-tabs" style="width:100%;height:250px">
+        <div title="隐患排查" style="padding:10px">
+            <p><a href="a.html" onclick="createRequest('a.html','aContent');return false;">no1</a></p>
+
+            <div id="tab-tools">
+                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-add'"
+                   onclick="addPanel()"></a>
+                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-remove'"
+                   onclick="removePanel()"></a>
+            </div>
+            <script type="text/javascript">
+                var index = 0;
+
+                function addPanel() {
+                    index++;
+                    $('#tt').tabs('add', {
+                        title: 'Tab' + index,
+                        content: '<div style="padding:10px">Content' + index + '</div>',
+                        closable: true
+                    });
+                }
+
+                function removePanel() {
+                    var tab = $('#tt').tabs('getSelected');
+                    if (tab) {
+                        var index = $('#tt').tabs('getTabIndex', tab);
+                        $('#tt').tabs('close', index);
+                    }
+                }
+            </script>
+        </div>
+        <div title="我的收藏"></div>
+    </div>
+    <!-- <a href='javascript:showContent("a.html","target")'>超链接</a> -->
+
+
+</div>
+
+
+</body>
+
+<script type="text/javascript">
+    var http_request = false;
+
+    function createRequest(url, objID) {
+        http_request = false;
+        if (window.XMLHttpRequest) { //非IE浏览器
+            http_request = new XMLHttpRequest();
+            if (http_request.overrideMimeType) {
+                http_request.overrideMimeType("text/xml");
+            }
+        } else if (window.ActiveXObject) { //IE浏览器
+            try {
+                http_request = new ActiveXObject("Msxml2.XMLHTTP");
+            } catch (e) {
+                try {
+                    http_request = new ActiveXObject("Microsoft.XMLHTTP");
+                } catch (e) {
+                }
+            }
+        }
+        if (!http_request) {
+            alert("无法创建XMLHTTP实例");
+            return false;
+        }
+        http_request.open("GET", url, true);
+        http_request.send(null);
+
+        var obj = document.getElementById(objID);
+        http_request.onreadystatechange = function () {
+            if (http_request.readyState == 4) {
+                if (http_request.status == 200) {
+                    obj.innerHTML = http_request.responseText;
+                } else {
+                    alert('您请求的页面发现错误！');
+                }
+            }
+        }
+    }
+</script>
+</html>
